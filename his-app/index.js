@@ -27,3 +27,8 @@ sequelize.authenticate()
   .catch(err => {
     console.error('❌ Error al conectar a la BD:', err);
   });
+  
+// Importar rutas
+const usuarioRoutes = require('./routes/usuarioRoutes');
+app.use('/usuarios', usuarioRoutes);
+
