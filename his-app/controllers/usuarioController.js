@@ -16,7 +16,18 @@ const crearUsuario = async (req, res) => {
       rol
     });
 
-    res.status(201).json(nuevoUsuario);
+    res.status(201).json({
+  mensaje: 'Usuario creado exitosamente',
+  usuario: {
+    id: nuevoUsuario.id,
+    nombre: nuevoUsuario.nombre,
+    apellido: nuevoUsuario.apellido,
+    email: nuevoUsuario.email,
+    rol: nuevoUsuario.rol,
+    createdAt: nuevoUsuario.createdAt,
+    updatedAt: nuevoUsuario.updatedAt
+  }
+});
   } catch (error) {
     console.error('❌ Error al crear usuario:', error);
     res.status(500).json({
