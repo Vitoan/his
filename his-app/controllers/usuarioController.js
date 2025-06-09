@@ -36,5 +36,20 @@ const crearUsuario = async (req, res) => {
     });
   }
 };
+const obtenerUsuarios = async (req, res) => {
+  try {
+    const usuarios = await Usuario.findAll({
+      attributes: ['id', 'nombre', 'apellido', 'email', 'rol', 'createdAt', 'updatedAt']
+    });
 
-module.exports = { crearUsuario };
+    res.json(usuarios);
+  } catch (error) {
+    console.error('❌ Error al obtener usuarios:', error);
+    res.status(500).json({
+      error: 'Error al obtener usuarios',
+      detalle: error.message
+    });
+  }
+};
+
+module.exports = { crearUsuario , obtenerUsuarios };
