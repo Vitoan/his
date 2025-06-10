@@ -110,12 +110,30 @@ const eliminarTurno = async (req, res) => {
     res.status(500).json({ error: 'Error al eliminar turno', detalle: error.message });
   }
 };
+const obtenerTurnoPorId = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const turno = await Turno.findByPk(id);
+
+    if (!turno) {
+      return res.status(404).json({ error: 'Turno no encontrado' });
+    }
+
+    res.json(turno);
+  } catch (error) {
+    console.error('❌ Error al obtener turno:', error);
+    res.status(500).json({ error: 'Error al obtener turno', detalle: error.message });
+  }
+};
+
 
 module.exports = {
   crearTurno,
   obtenerTurnos,
   actualizarTurno,
-  eliminarTurno // 👈 nuevo export
+  eliminarTurno, // 👈 nuevo export
+  obtenerTurnoPorId
 };
 
 
