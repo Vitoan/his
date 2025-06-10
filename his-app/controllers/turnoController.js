@@ -93,9 +93,29 @@ const actualizarTurno = async (req, res) => {
   }
 };
 
+const eliminarTurno = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const turno = await Turno.findByPk(id);
+
+    if (!turno) {
+      return res.status(404).json({ error: 'Turno no encontrado' });
+    }
+
+    await turno.destroy();
+    res.json({ mensaje: 'Turno eliminado correctamente' });
+  } catch (error) {
+    console.error('❌ Error al eliminar turno:', error);
+    res.status(500).json({ error: 'Error al eliminar turno', detalle: error.message });
+  }
+};
 
 module.exports = {
   crearTurno,
   obtenerTurnos,
-  actualizarTurno
+  actualizarTurno,
+  eliminarTurno // 👈 nuevo export
 };
+
+
