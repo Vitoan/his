@@ -142,22 +142,25 @@ const eliminarUsuario = async (req, res) => {
 const loginUsuario = async (req, res) => {
   const { email, password } = req.body;
 
+  // Validar que se envíen ambos campos
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email y contraseña son obligatorios' });
+  }
+
   try {
-    // Buscar usuario por email
     const usuario = await Usuario.findOne({ where: { email } });
 
     if (!usuario) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
 
-    // Comparar contraseñas
     const passwordValido = await bcrypt.compare(password, usuario.password);
 
     if (!passwordValido) {
       return res.status(401).json({ error: 'Credenciales inválidas' });
     }
 
-    // Login exitoso
+    // Si todo va bien, simular "inicio de sesión"
     res.status(200).json({
       mensaje: 'Login exitoso',
       usuario: {
@@ -168,12 +171,13 @@ const loginUsuario = async (req, res) => {
         rol: usuario.rol
       }
     });
-
+    
   } catch (error) {
     console.error('Error en login:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
+
 
 
 module.exports = { crearUsuario , obtenerUsuarios, obtenerUsuarioPorId, actualizarUsuario, eliminarUsuario, loginUsuario };
