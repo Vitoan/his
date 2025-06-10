@@ -50,8 +50,52 @@ const obtenerTurnos = async (req, res) => {
     });
   }
 };
+const actualizarTurno = async (req, res) => {
+  const { id } = req.params;
+  const { fecha, hora, pacienteId, medicoId } = req.body;
+
+  try {
+    // Verificar que el turno exista
+    const turno = await Turno.findByPk(id);
+    if (!turno) {
+      return res.status(404).json({ error: `No se encontró el turno con ID ${id}` });
+    }
+
+    // Validar paciente
+    if (pacienteId) {
+      const pacienteExiste = await Paciente.findByPk(pacienteId);
+      if (!pacienteExiste) {
+        return res.status(400).json({ error: `Paciente con ID ${pacienteId} no existe.` });
+      }
+    }
+
+    // Validar médico
+    if (medicoId) {
+      const medicoExiste = await Medico.findByPk(medicoId);
+      if (!medicoExiste) {
+        return res.status(400).json({ error: `Médico con ID ${medicoId} no existe.` });
+      }
+    }
+
+    // Actualizar turno
+    await turno.update({ fecha, hora, pacienteId, medicoId });
+
+    res.json({
+      mensaje: 'Turno actualizado correctamente',
+      turno
+    });
+  } catch (error) {
+    console.error('❌ Error al actualizar turno:', error);
+    res.status(500).json({
+      error: 'Error al actualizar turno',
+      detalle: error.message
+    });
+  }
+};
+
 
 module.exports = {
   crearTurno,
-  obtenerTurnos
+  obtenerTurnos,
+  actualizarTurno
 };
