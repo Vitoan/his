@@ -1,3 +1,4 @@
+// models/medico.js
 module.exports = (sequelize, DataTypes) => {
   const Medico = sequelize.define('Medico', {
     nombre: {
@@ -11,11 +12,6 @@ module.exports = (sequelize, DataTypes) => {
     especialidad: {
       type: DataTypes.STRING,
       allowNull: false
-    },
-    matricula: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true
     },
     email: {
       type: DataTypes.STRING,
