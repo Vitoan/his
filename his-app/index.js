@@ -41,3 +41,7 @@ app.use('/login', loginRoutes);
 const pacienteRoutes = require('./routes/pacienteRoutes');
 app.use('/pacientes', pacienteRoutes);
 
+sequelize.sync(); 
+
+const medicoRoutes = require('./routes/medicoRoutes');
+app.use('/medicos', medicoRoutes);

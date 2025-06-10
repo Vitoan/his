@@ -7,11 +7,13 @@ const sequelize = new Sequelize('his_db', 'root', '2412Vavo', {
 // Modelos
 const Usuario = require('./usuario')(sequelize, DataTypes);
 const Paciente = require('./Paciente')(sequelize, DataTypes);
+const Medico = require('./medico')(sequelize, DataTypes);
 
 module.exports = {
   sequelize,
   Usuario,
-  Paciente
+  Paciente,
+  Medico
 };
 
 sequelize.sync({ alter: true }) // también podés usar { force: true } si querés borrar y crear todo de cero
