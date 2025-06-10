@@ -40,3 +40,4 @@ app.use('/login', loginRoutes);
 
 const pacienteRoutes = require('./routes/pacienteRoutes');
 app.use('/pacientes', pacienteRoutes);
+
