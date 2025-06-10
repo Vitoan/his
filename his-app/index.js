@@ -48,3 +48,6 @@ app.use('/medicos', medicoRoutes);
 
 const turnoRoutes = require('./routes/turnoRoutes');
 app.use('/turnos', turnoRoutes);
+
+const especialidadRoutes = require('./routes/especialidadRoutes');
+app.use('/especialidades', especialidadRoutes);

@@ -9,6 +9,7 @@ const Usuario = require('./usuario')(sequelize, DataTypes);
 const Paciente = require('./Paciente')(sequelize, DataTypes);
 const Medico = require('./medico')(sequelize, DataTypes);
 const Turno = require('./turno')(sequelize, DataTypes);
+const Especialidad = require('./especialidad')(sequelize, DataTypes);
 
 // Relaciones
 Paciente.hasMany(Turno, { foreignKey: 'pacienteId' });
@@ -17,12 +18,24 @@ Turno.belongsTo(Paciente, { foreignKey: 'pacienteId' });
 Medico.hasMany(Turno, { foreignKey: 'medicoId' });
 Turno.belongsTo(Medico, { foreignKey: 'medicoId' });
 
+// Asociación: Medico pertenece a una Especialidad
+// IMPORTANT: Changed 'as' from 'especialidad' to 'medicoEspecialidad' to avoid collision
+Medico.belongsTo(Especialidad, {
+  foreignKey: 'especialidadId',
+  as: 'medicoEspecialidad' // Changed 'as' here
+});
+Especialidad.hasMany(Medico, {
+  foreignKey: 'especialidadId',
+  as: 'medicos'
+});
+
 module.exports = {
   sequelize,
   Usuario,
   Paciente,
   Medico,
-  Turno
+  Turno,
+  Especialidad
 };
 
 sequelize.sync({ alter: true })
