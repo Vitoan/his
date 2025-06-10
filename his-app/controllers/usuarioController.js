@@ -118,6 +118,27 @@ const actualizarUsuario = async (req, res) => {
     });
   }
 };
+const eliminarUsuario = async (req, res) => {
+  const { id } = req.params;
 
-module.exports = { crearUsuario , obtenerUsuarios, obtenerUsuarioPorId, actualizarUsuario };
+  try {
+    const usuario = await Usuario.findByPk(id);
+
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    await usuario.destroy();
+
+    res.json({ mensaje: 'Usuario eliminado correctamente' });
+  } catch (error) {
+    console.error('❌ Error al eliminar usuario:', error);
+    res.status(500).json({
+      error: 'Error al eliminar usuario',
+      detalle: error.message
+    });
+  }
+};
+
+module.exports = { crearUsuario , obtenerUsuarios, obtenerUsuarioPorId, actualizarUsuario, eliminarUsuario };
 // Exportamos las funciones del controlador para ser utilizadas en las rutas
