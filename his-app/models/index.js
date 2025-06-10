@@ -8,15 +8,24 @@ const sequelize = new Sequelize('his_db', 'root', '2412Vavo', {
 const Usuario = require('./usuario')(sequelize, DataTypes);
 const Paciente = require('./Paciente')(sequelize, DataTypes);
 const Medico = require('./medico')(sequelize, DataTypes);
+const Turno = require('./turno')(sequelize, DataTypes);
+
+// Relaciones
+Paciente.hasMany(Turno, { foreignKey: 'pacienteId' });
+Turno.belongsTo(Paciente, { foreignKey: 'pacienteId' });
+
+Medico.hasMany(Turno, { foreignKey: 'medicoId' });
+Turno.belongsTo(Medico, { foreignKey: 'medicoId' });
 
 module.exports = {
   sequelize,
   Usuario,
   Paciente,
-  Medico
+  Medico,
+  Turno
 };
 
-sequelize.sync({ alter: true }) // también podés usar { force: true } si querés borrar y crear todo de cero
+sequelize.sync({ alter: true })
   .then(() => {
     console.log('✅ Tablas sincronizadas');
   })
