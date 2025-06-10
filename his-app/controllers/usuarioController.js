@@ -139,6 +139,42 @@ const eliminarUsuario = async (req, res) => {
     });
   }
 };
+const loginUsuario = async (req, res) => {
+  const { email, password } = req.body;
 
-module.exports = { crearUsuario , obtenerUsuarios, obtenerUsuarioPorId, actualizarUsuario, eliminarUsuario };
+  try {
+    // Buscar usuario por email
+    const usuario = await Usuario.findOne({ where: { email } });
+
+    if (!usuario) {
+      return res.status(401).json({ error: 'Credenciales inválidas' });
+    }
+
+    // Comparar contraseñas
+    const passwordValido = await bcrypt.compare(password, usuario.password);
+
+    if (!passwordValido) {
+      return res.status(401).json({ error: 'Credenciales inválidas' });
+    }
+
+    // Login exitoso
+    res.status(200).json({
+      mensaje: 'Login exitoso',
+      usuario: {
+        id: usuario.id,
+        nombre: usuario.nombre,
+        apellido: usuario.apellido,
+        email: usuario.email,
+        rol: usuario.rol
+      }
+    });
+
+  } catch (error) {
+    console.error('Error en login:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+
+module.exports = { crearUsuario , obtenerUsuarios, obtenerUsuarioPorId, actualizarUsuario, eliminarUsuario, loginUsuario };
 // Exportamos las funciones del controlador para ser utilizadas en las rutas
