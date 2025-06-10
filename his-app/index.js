@@ -45,3 +45,6 @@ sequelize.sync();
 
 const medicoRoutes = require('./routes/medicoRoutes');
 app.use('/medicos', medicoRoutes);
+
+const turnoRoutes = require('./routes/turnoRoutes');
+app.use('/turnos', turnoRoutes);
