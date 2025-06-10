@@ -127,13 +127,34 @@ const obtenerTurnoPorId = async (req, res) => {
   }
 };
 
+const obtenerTurnosPorPaciente = async (req, res) => {
+  const { pacienteId } = req.params;
+  try {
+    const turnos = await Turno.findAll({ where: { pacienteId } });
+    res.json(turnos);
+  } catch (error) {
+    console.error('❌ Error al obtener turnos del paciente:', error);
+    res.status(500).json({ error: 'Error al obtener turnos del paciente', detalle: error.message });
+  }
+};
+
+const obtenerTurnosPorMedico = async (req, res) => {
+  const { medicoId } = req.params;
+  try {
+    const turnos = await Turno.findAll({ where: { medicoId } });
+    res.json(turnos);
+  } catch (error) {
+    console.error('❌ Error al obtener turnos del médico:', error);
+    res.status(500).json({ error: 'Error al obtener turnos del médico', detalle: error.message });
+  }
+};
 
 module.exports = {
   crearTurno,
   obtenerTurnos,
+  obtenerTurnoPorId,
   actualizarTurno,
-  eliminarTurno, // 👈 nuevo export
-  obtenerTurnoPorId
+  eliminarTurno,
+  obtenerTurnosPorPaciente,
+  obtenerTurnosPorMedico
 };
-
-
