@@ -1,4 +1,5 @@
 const { Turno, Paciente, Medico } = require('../models');
+const { Op } = require('sequelize');
 
 const crearTurno = async (req, res) => {
   const { fecha, hora, pacienteId, medicoId } = req.body;
@@ -149,6 +150,32 @@ const obtenerTurnosPorMedico = async (req, res) => {
   }
 };
 
+
+const obtenerTurnosDeHoy = async (req, res) => {
+  try {
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    const mañana = new Date(hoy);
+    mañana.setDate(hoy.getDate() + 1);
+
+    const turnosDeHoy = await Turno.findAll({
+      where: {
+        fecha: {
+          [Op.gte]: hoy,
+          [Op.lt]: mañana
+        }
+      }
+    });
+
+    res.json(turnosDeHoy);
+  } catch (error) {
+    console.error('❌ Error al obtener turnos de hoy:', error);
+    res.status(500).json({ error: 'Error al obtener turnos de hoy', detalle: error.message });
+  }
+};
+
+
 module.exports = {
   crearTurno,
   obtenerTurnos,
@@ -156,5 +183,6 @@ module.exports = {
   actualizarTurno,
   eliminarTurno,
   obtenerTurnosPorPaciente,
-  obtenerTurnosPorMedico
+  obtenerTurnosPorMedico,
+  obtenerTurnosDeHoy
 };
