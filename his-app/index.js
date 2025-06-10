@@ -32,3 +32,5 @@ sequelize.authenticate()
 const usuarioRoutes = require('./routes/usuarioRoutes');
 app.use('/usuarios', usuarioRoutes);
 
+const authRoutes = require('./routes/authRoutes');
+app.use('/', authRoutes); // o `/auth` si querés agrupar
