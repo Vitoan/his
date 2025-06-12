@@ -58,3 +58,5 @@ app.use('/consultas', consultaRoutes);
 const recetaRoutes = require('./routes/recetaRoutes');
 app.use('/recetas', recetaRoutes);
 
+const diagnosticoRoutes = require('./routes/diagnostico');
+app.use('/diagnosticos', diagnosticoRoutes);
