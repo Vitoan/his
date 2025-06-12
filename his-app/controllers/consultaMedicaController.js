@@ -44,9 +44,26 @@ const obtenerConsultaPorId = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener la consulta' });
   }
 };
+const obtenerConsultasPorMedico = async (req, res) => {
+  try {
+    const { medicoId } = req.params;
+
+    const consultas = await ConsultaMedica.findAll({
+      include: {
+        model: Turno,
+        where: { medicoId }
+      }
+    });
+
+    res.json(consultas);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener las consultas del médico', detalle: error.message });
+  }
+};
 
 module.exports = {
   crearConsulta,
   obtenerConsultas,
-  obtenerConsultaPorId
+  obtenerConsultaPorId,
+  obtenerConsultasPorMedico
 };
