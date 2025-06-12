@@ -54,3 +54,7 @@ app.use('/especialidades', especialidadRoutes);
 
 const consultaRoutes = require('./routes/consultaMedicaRoutes');
 app.use('/consultas', consultaRoutes);
+
+const recetaRoutes = require('./routes/recetaRoutes');
+app.use('/recetas', recetaRoutes);
+
