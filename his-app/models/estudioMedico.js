@@ -9,17 +9,28 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    tipo: {
+    nombre: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    descripcion: {
-      type: DataTypes.TEXT,
+    fecha: {
+      type: DataTypes.DATEONLY,
       allowNull: false
     },
-    resultado: {
-      type: DataTypes.TEXT,
+    estado: {
+      type: DataTypes.ENUM('pendiente', 'en proceso', 'completado'),
+      defaultValue: 'pendiente',
+      allowNull: false
+    },
+    tipo: {
+      type: DataTypes.ENUM('laboratorio', 'imagen', 'otros'),
+      allowNull: false
+    },
+    archivo: {
+      type: DataTypes.STRING, // Simulación
       allowNull: true
     }
+  }, {
+    tableName: 'estudios_medicos'
   });
 };
