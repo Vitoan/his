@@ -60,3 +60,6 @@ app.use('/recetas', recetaRoutes);
 
 const diagnosticoRoutes = require('./routes/diagnostico');
 app.use('/diagnosticos', diagnosticoRoutes);
+
+const estudioRoutes = require('./routes/estudioMedicoRoutes');
+app.use(estudioRoutes);
