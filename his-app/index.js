@@ -63,3 +63,6 @@ app.use('/diagnosticos', diagnosticoRoutes);
 
 const estudioRoutes = require('./routes/estudioMedicoRoutes');
 app.use(estudioRoutes);
+
+const resultadoEstudioRoutes = require('./routes/resultadoEstudioRoutes');
+app.use('/resultados-estudios', resultadoEstudioRoutes);
