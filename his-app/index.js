@@ -66,3 +66,6 @@ app.use(estudioRoutes);
 
 const resultadoEstudioRoutes = require('./routes/resultadoEstudioRoutes');
 app.use('/resultados-estudios', resultadoEstudioRoutes);
+
+const admisionRoutes = require('./routes/admisiónRoutes');
+app.use('/admision', admisionRoutes);
