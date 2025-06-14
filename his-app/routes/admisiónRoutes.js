@@ -1,16 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const controller = require('../controllers/admisionController');
 
-router.get('/', (req, res) => {
-  res.json({
-    mensaje: 'Módulo de Admisión y Recepción activo',
-    endpoints: {
-      pacientes: '/pacientes',
-      turnos: '/turnos',
-      medicos: '/medicos',
-      consultas: '/consultas-medicas'
-    }
-  });
-});
+router.post('/', controller.crearAdmision);
+router.get('/', controller.listarAdmisiones);
+router.get('/:id', controller.obtenerAdmision);
+router.put('/:id', controller.actualizarAdmision);
+router.delete('/:id', controller.eliminarAdmision);
 
 module.exports = router;

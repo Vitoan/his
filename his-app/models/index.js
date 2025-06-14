@@ -15,6 +15,7 @@ const Receta = require('./receta')(sequelize, DataTypes);
 const Diagnostico = require('./diagnostico')(sequelize, DataTypes);
 const EstudioMedico = require('./estudioMedico')(sequelize, DataTypes);
 const ResultadoEstudio = require('./ResultadoEstudio')(sequelize, DataTypes);
+const Admision = require('./admision')(sequelize, DataTypes);
 
 // Relaciones
 Paciente.hasMany(Turno, { foreignKey: 'pacienteId' });
@@ -50,6 +51,13 @@ EstudioMedico.belongsTo(ConsultaMedica, { foreignKey: 'consultaMedicaId' });
 EstudioMedico.hasOne(ResultadoEstudio, { foreignKey: 'estudioMedicoId' });
 ResultadoEstudio.belongsTo(EstudioMedico, { foreignKey: 'estudioMedicoId' });
 
+// Asociación: Paciente tiene muchas Admisiones
+Paciente.hasMany(Admision, { foreignKey: 'pacienteId' });
+Admision.belongsTo(Paciente, { foreignKey: 'pacienteId' });
+// Asociación: Turno tiene muchas Admisiones
+Turno.hasOne(Admision, { foreignKey: 'turnoId' });
+Admision.belongsTo(Turno, { foreignKey: 'turnoId' });
+
 module.exports = {
   sequelize,
   Usuario,
@@ -61,7 +69,8 @@ module.exports = {
   Receta,
   Diagnostico,
   EstudioMedico,
-  ResultadoEstudio
+  ResultadoEstudio,
+  Admision
 };
 
 sequelize.sync({ alter: true })
