@@ -1,0 +1,16 @@
+extends ../layout
+
+block content
+  h2 Nueva Admisión
+
+  form(action="/admision" method="POST")
+    label(for="motivo") Motivo:
+    input(type="text" name="motivo" required)
+
+    label(for="pacienteId") Paciente ID:
+    input(type="number" name="pacienteId" required)
+
+    label(for="turnoId") Turno ID:
+    input(type="number" name="turnoId" required)
+
+    button(type="submit") Crear

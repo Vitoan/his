@@ -1,0 +1,16 @@
+extends ../layout
+
+block content
+  h2 Editar Admisión
+
+  form(action=`/admision/${admision.id}?_method=PUT` method="POST")
+    label(for="motivo") Motivo:
+    input(type="text" name="motivo" required value=admision.motivo)
+
+    label(for="pacienteId") Paciente ID:
+    input(type="number" name="pacienteId" required value=admision.pacienteId)
+
+    label(for="turnoId") Turno ID:
+    input(type="number" name="turnoId" required value=admision.turnoId)
+
+    button(type="submit") Actualizar

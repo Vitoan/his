@@ -69,3 +69,13 @@ app.use('/resultados-estudios', resultadoEstudioRoutes);
 
 const admisionRoutes = require('./routes/admisiónRoutes');
 app.use('/admision', admisionRoutes);
+
+const methodOverride = require('method-override');
+app.use(methodOverride('_method'));
+
+const admisionViewsRoutes = require('./routes/admisionViews');
+app.use('/admision', admisionViewsRoutes);
+
+const path = require('path');
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));

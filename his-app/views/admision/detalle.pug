@@ -1,0 +1,11 @@
+extends ../layout
+
+block content
+  h2 Detalle de Admisión
+
+  p ID: #{admision.id}
+  p Motivo: #{admision.motivo}
+  p Paciente: #{admision.Paciente?.nombre || 'N/A'}
+  p Turno: #{admision.Turno?.fecha || 'N/A'}
+
+  a(href="/admision") Volver

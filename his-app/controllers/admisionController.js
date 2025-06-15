@@ -50,3 +50,15 @@ exports.eliminarAdmision = async (req, res) => {
     res.status(500).json({ error: 'Error al eliminar', detalle: error.message });
   }
 };
+
+exports.vistaListarAdmisiones = async (req, res) => {
+  try {
+    const admisiones = await Admision.findAll({
+      include: [Paciente, Turno]
+    });
+    res.render('admision/lista', { admisiones });
+  } catch (error) {
+    console.error('ERROR en vistaListarAdmisiones:', error.message);
+    res.status(500).send('Error al renderizar vista');
+  }
+};

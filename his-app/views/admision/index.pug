@@ -1,0 +1,33 @@
+doctype html
+html
+  head
+    title Listado de Admisiones
+    meta(charset="UTF-8")
+  body
+    h1 Listado de Admisiones
+
+    a(href="/admision/vista/crear") Nueva Admisión
+
+    if admisiones.length
+      table(border="1")
+        thead
+          tr
+            th ID
+            th Paciente
+            th Turno
+            th Motivo
+            th Fecha
+            th Acciones
+        tbody
+          each admision in admisiones
+            tr
+              td= admision.id
+              td= admision.Paciente ? admision.Paciente.nombre + ' ' + admision.Paciente.apellido : 'Sin paciente'
+              td= admision.Turno ? admision.Turno.fecha : 'Sin turno'
+              td= admision.motivo
+              td= admision.fecha
+              td
+                a(href=`/admision/vista/editar/${admision.id}`) Editar |
+                a(href=`/admision/eliminar/${admision.id}` onclick="return confirm('¿Eliminar admisión?')") Eliminar
+    else
+      p No hay admisiones registradas.

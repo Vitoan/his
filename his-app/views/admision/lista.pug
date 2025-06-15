@@ -1,0 +1,12 @@
+doctype html
+html
+  head
+    title Lista de Admisiones
+  body
+    h1 Lista de Admisiones
+    each adm in admisiones
+      div
+        h2= `Admisión #${adm.id}`
+        p Paciente: #{adm.Paciente.nombre} #{adm.Paciente.apellido}
+        p Turno: #{adm.Turno.fecha} a las #{adm.Turno.hora}
+        p Motivo: #{adm.motivo}
