@@ -1,12 +1,26 @@
-doctype html
-html
-  head
-    title Lista de Admisiones
-  body
-    h1 Lista de Admisiones
-    each adm in admisiones
-      div
-        h2= `Admisión #${adm.id}`
-        p Paciente: #{adm.Paciente.nombre} #{adm.Paciente.apellido}
-        p Turno: #{adm.Turno.fecha} a las #{adm.Turno.hora}
-        p Motivo: #{adm.motivo}
+each admision in admisiones
+  h2 Admisión ##{admision.id}
+
+  p 
+    if admision.Paciente
+      | Paciente: #{admision.Paciente.nombre} #{admision.Paciente.apellido}
+    else
+      | Paciente no asignado
+
+  p 
+    if admision.Turno
+      | Turno: #{admision.Turno.fecha} a las #{admision.Turno.hora}
+    else
+      | Turno no asignado
+
+  p 
+    | Motivo: #{admision.motivo}
+
+  a(href=`/admision/vista/${admision.id}`) Ver Detalle
+  |  
+  a(href=`/admision/vista/${admision.id}/editar`) Editar
+  |  
+  form(action=`/admision/${admision.id}?_method=DELETE`, method='POST', style='display:inline')
+    button(type='submit' onclick='return confirm("¿Eliminar esta admisión?")') Eliminar
+
+  hr
