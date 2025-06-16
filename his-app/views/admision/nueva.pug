@@ -1,16 +1,29 @@
-extends ../layout
+extends ../layout.pug
 
 block content
   h2 Nueva Admisión
 
-  form(action="/admision" method="POST")
-    label(for="motivo") Motivo:
-    input(type="text" name="motivo" required)
+  form(method="POST", action="/admision")
+    div
+      label(for="paciente_id") Paciente:
+      select(name="paciente_id", required)
+        option(value="") -- Seleccionar paciente --
+        each paciente in pacientes
+          option(value=paciente.id) #{paciente.nombre} #{paciente.apellido}
 
-    label(for="pacienteId") Paciente ID:
-    input(type="number" name="pacienteId" required)
+    div
+      label(for="turno_id") Turno:
+      select(name="turno_id", required)
+        option(value="") -- Seleccionar turno --
+        each turno in turnos
+          option(value=turno.id) #{turno.fecha} - #{turno.hora}
 
-    label(for="turnoId") Turno ID:
-    input(type="number" name="turnoId" required)
+    div
+      label(for="motivo") Motivo:
+      input(type="text", name="motivo", required)
 
-    button(type="submit") Crear
+    div
+      label(for="observaciones") Observaciones:
+      textarea(name="observaciones")
+
+    button(type="submit") Guardar Admisión

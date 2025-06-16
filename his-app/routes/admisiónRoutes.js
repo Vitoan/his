@@ -6,6 +6,20 @@ router.post('/', controller.crearAdmision);
 router.get('/vista', controller.vistaListarAdmisiones);
 router.get('/vista/:id', controller.vistaDetalle);
 router.get('/', controller.listarAdmisiones);
+// Mostrar formulario para nueva admisión
+router.get('/nueva', async (req, res) => {
+  try {
+    const { Paciente, Turno } = require('../models');
+
+    const pacientes = await Paciente.findAll();
+    const turnos = await Turno.findAll();
+
+    res.render('admision/nueva', { pacientes, turnos });
+  } catch (error) {
+    console.error('Error al mostrar formulario de nueva admisión:', error.message);
+    res.status(500).send('Error al cargar formulario de nueva admisión');
+  }
+});
 router.get('/editar/:id', async (req, res) => {
   try {
     const { Admision, Paciente, Turno } = require('../models');

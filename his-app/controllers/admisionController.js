@@ -3,9 +3,9 @@ const { Admision, Paciente, Turno } = require('../models');
 exports.crearAdmision = async (req, res) => {
   try {
     const nueva = await Admision.create(req.body);
-    res.json(nueva);
+    res.redirect('/admision/vista'); // O redirige a donde desees
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear admisión', detalle: error.message });
+    res.status(500).send('Error al crear admisión');
   }
 };
 
@@ -104,3 +104,4 @@ exports.procesarEdicion = async (req, res) => {
     res.status(500).send('Error al editar admisión');
   }
 };
+
