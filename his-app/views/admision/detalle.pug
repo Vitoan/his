@@ -1,11 +1,25 @@
-extends ../layout
+doctype html
+html
+  head
+    title Detalle de Admisión
+  body
+    h1 Detalle de Admisión ##{admision.id}
 
-block content
-  h2 Detalle de Admisión
+    p
+      if admision.Paciente
+        | Paciente: #{admision.Paciente.nombre} #{admision.Paciente.apellido}
+      else
+        | Paciente no asignado
 
-  p ID: #{admision.id}
-  p Motivo: #{admision.motivo}
-  p Paciente: #{admision.Paciente?.nombre || 'N/A'}
-  p Turno: #{admision.Turno?.fecha || 'N/A'}
+    p
+      if admision.Turno
+        | Turno: #{admision.Turno.fecha} a las #{admision.Turno.hora}
+      else
+        | Turno no asignado
 
-  a(href="/admision") Volver
+    p
+      | Motivo: #{admision.motivo}
+
+    
+    a(href='/admision/vista') ← Volver a la lista
+    a(href=`/admision/vista/${admision.id}/editar`) 📝 Editar esta admisión

@@ -62,3 +62,45 @@ exports.vistaListarAdmisiones = async (req, res) => {
     res.status(500).send('Error al renderizar vista');
   }
 };
+
+exports.vistaDetalle = async (req, res) => {
+  try {
+    const admision = await Admision.findByPk(req.params.id, {
+      include: [Paciente, Turno]
+    });
+    if (!admision) return res.status(404).send('Admisión no encontrada');
+    res.render('admision/detalle', { admision });
+  } catch (error) {
+    console.error('ERROR en vistaDetalle:', error.message);
+    res.status(500).send('Error al renderizar vista de detalle');
+  }
+};
+
+// Mostrar formulario con datos cargados
+exports.vistaEditar = async (req, res) => {
+  try {
+    const admision = await Admision.findByPk(req.params.id);
+    if (!admision) return res.status(404).send('Admisión no encontrada');
+    res.render('admision/editar', { admision });
+  } catch (error) {
+    console.error('Error en vistaEditar:', error.message);
+    res.status(500).send('Error al mostrar el formulario de edición');
+  }
+};
+
+// Procesar datos del formulario
+exports.procesarEdicion = async (req, res) => {
+  try {
+    const admision = await Admision.findByPk(req.params.id);
+    if (!admision) return res.status(404).send('Admisión no encontrada');
+    await admision.update({
+      motivo: req.body.motivo,
+      turno_id: req.body.turno_id,
+      paciente_id: req.body.paciente_id
+    });
+    res.redirect(`/admision/vista/${admision.id}`);
+  } catch (error) {
+    console.error('Error en procesarEdicion:', error.message);
+    res.status(500).send('Error al editar admisión');
+  }
+};
