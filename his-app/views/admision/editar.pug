@@ -1,22 +1,18 @@
-doctype html
-html
-  head
-    title Editar Admisión
-  body
-    h1 Editar Admisión ##{admision.id}
+extends ../layout.pug
 
-    form(action=`/admision/vista/${admision.id}/editar`, method='POST')
-      div
-        label(for='motivo') Motivo:
-        input(type='text', name='motivo', id='motivo', value=admision.motivo required)
-
-      div
-        label(for='turno_id') ID del Turno:
-        input(type='number', name='turno_id', id='turno_id', value=admision.turno_id required)
-
-      div
-        label(for='paciente_id') ID del Paciente:
-        input(type='number', name='paciente_id', id='paciente_id', value=admision.paciente_id required)
-
-      button(type='submit') Guardar Cambios
-      a(href='/admision/vista') Cancelar
+block content
+  h2 Editar Admisión
+  form(method="POST", action="/admision/editar/" + admision.id + "?_method=PUT")
+    div
+      label Paciente:
+      input(type="text", value= admision.Paciente ? admision.Paciente.nombre + ' ' + admision.Paciente.apellido : '', readonly)
+    div
+      label Turno:
+      input(type="text", value= admision.Turno ? admision.Turno.fecha + ' - ' + admision.Turno.hora : '', readonly)
+    div
+      label Motivo:
+      input(type="text", name="motivo", value= admision.motivo)
+    div
+      label Observaciones:
+      textarea(name="observaciones")= admision.observaciones
+    button(type="submit") Guardar Cambios
