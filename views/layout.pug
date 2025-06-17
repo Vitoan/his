@@ -14,7 +14,7 @@ html(lang="es")
         theme: {
           extend: {
             colors: {
-              primary: '#007bff', 
+              primary: '#007bff',
               secondary: '#6c757d',
               success: '#28a745',
               danger: '#dc3545',
@@ -24,20 +24,20 @@ html(lang="es")
           }
         }
       }
-  body.bg-gray-100.text-gray-900.flex.flex-col.min-h-screen
-    header.bg-primary.text-white.p-4.shadow-md
-      .container.mx-auto.flex.flex-col.md:flex-row.justify-between.items-center
-        h1.text-3xl.font-bold.mb-2.md:mb-0 HIS - Sistema Hospitalario
+  body(class=['bg-gray-100', 'text-gray-900', 'flex', 'flex-col', 'min-h-screen'])
+    header(class=['bg-primary', 'text-white', 'p-4', 'shadow-md'])
+      .container.mx-auto(class=['flex', 'flex-col', 'md:flex-row', 'justify-between', 'items-center'])
+        h1(class=['text-3xl', 'font-bold', 'mb-2', 'md:mb-0']) HIS - Sistema Hospitalario
         nav
-          ul.flex.space-x-4
-            li: a(href="/").text-white.hover:text-gray-200.transition.duration-300.font-semibold Inicio
-            li: a(href="/admision").text-white.hover:text-gray-200.transition.duration-300.font-semibold Admisión de Pacientes
-            li: a(href="/pacientes/lista").text-white.hover:text-gray-200.transition.duration-300.font-semibold Lista de Pacientes
+          ul(class=['flex', 'space-x-4'])
+            li: a(href="/", class=['text-white', 'hover:text-gray-200', 'transition', 'duration-300', 'font-semibold']) Inicio
+            li: a(href="/admision", class=['text-white', 'hover:text-gray-200', 'transition', 'duration-300', 'font-semibold']) Admisión de Pacientes
+            li: a(href="/pacientes/lista", class=['text-white', 'hover:text-gray-200', 'transition', 'duration-300', 'font-semibold']) Lista de Pacientes
 
-    main.flex-grow.py-8
-      .container.mx-auto.bg-white.p-8.rounded-lg.shadow-lg
+    main(class=['flex-grow', 'py-8'])
+      .container.mx-auto(class=['bg-white', 'p-8', 'rounded-lg', 'shadow-lg'])
         block content // Aquí se inyectará el contenido específico de cada vista
 
-    footer.bg-gray-800.text-white.p-4.text-center.mt-8.shadow-inner
+    footer(class=['bg-gray-800', 'text-white', 'p-4', 'text-center', 'mt-8', 'shadow-inner'])
       .container.mx-auto
-        p.text-sm &copy; #{new Date().getFullYear()} Sistema HIS. Desarrollado por [Tu Nombre/Equipo]. Todos los derechos reservados.
+        p.text-sm © #{new Date().getFullYear()} Sistema HIS. Desarrollado por [Tu Nombre/Equipo]. Todos los derechos reservados.
