@@ -1,194 +1,94 @@
-const db = require('../config/db'); // Importa la conexión a la base de datos
+// controllers/pacienteController.js
+// Este controlador maneja la lógica de las solicitudes HTTP, interactuando con el modelo de pacientes.
+
+// Importa el módulo Paciente (Paciente.js) que contiene la lógica de negocio y acceso a la base de datos.
+// CORRECCIÓN: Se asume que el archivo del modelo se llama 'Paciente.js' en la carpeta 'models/'.
+const pacienteModel = require('../models/Paciente'); // Ruta corregida a 'Paciente'
 
 /**
  * Muestra el formulario de admisión de pacientes.
+ * Se accede vía GET a la ruta /admision.
  * @param {Object} req - Objeto de solicitud de Express.
  * @param {Object} res - Objeto de respuesta de Express.
  */
 exports.mostrarFormularioAdmision = (req, res) => {
+    // Renderiza la vista 'formularioAdmision.pug' y le pasa un título.
     res.render('formularioAdmision', { title: 'Admisión de Pacientes' });
 };
 
 /**
- * Procesa el registro o actualización de un paciente y su internación,
- * incluyendo la lógica de asignación de cama.
- * Utiliza transacciones para asegurar la integridad de los datos.
- * @param {Object} req - Objeto de solicitud de Express (contiene datos del formulario).
+ * Procesa el registro o actualización de un paciente y su internación.
+ * Esta función es la que maneja la lógica central de admisión, incluyendo la asignación de cama.
+ * Se accede vía POST a la ruta /admision.
+ * @param {Object} req - Objeto de solicitud de Express (contiene datos del formulario en req.body).
  * @param {Object} res - Objeto de respuesta de Express.
  */
 exports.procesarAdmision = async (req, res) => {
-    const {
-        dni, nombre, apellido, fecha_nacimiento, sexo,
-        direccion, telefono, email, grupo_sanguineo,
-        alergias, antecedentes_medicos, motivo_internacion
-    } = req.body;
+    // Extrae los datos del formulario del cuerpo de la solicitud.
+    const pacienteData = req.body;
 
-    let connection; // Variable para la conexión de la transacción
     try {
-        connection = await db.getConnection(); // Obtiene una conexión del pool
-        await connection.beginTransaction(); // Inicia la transacción
+        // Llama a la función 'admitirPaciente' del modelo para manejar toda la lógica de negocio,
+        // incluyendo la transacción para registrar/actualizar el paciente y asignar la cama.
+        const result = await pacienteModel.admitirPaciente(pacienteData);
 
-        // 1. Registrar o actualizar paciente
-        const [pacienteExistente] = await connection.execute(
-            'SELECT id_paciente FROM pacientes WHERE dni = ?',
-            [dni]
-        );
-
-        let idPaciente;
-        if (pacienteExistente.length > 0) {
-            idPaciente = pacienteExistente[0].id_paciente;
-            await connection.execute(
-                `UPDATE pacientes SET nombre = ?, apellido = ?, fecha_nacimiento = ?, sexo = ?,
-                 direccion = ?, telefono = ?, email = ?, grupo_sanguineo = ?,
-                 alergias = ?, antecedentes_medicos = ?, motivo_internacion = ?
-                 WHERE id_paciente = ?`,
-                [
-                    nombre, apellido, fecha_nacimiento, sexo,
-                    direccion, telefono, email, grupo_sanguineo,
-                    alergias, antecedentes_medicos, motivo_internacion,
-                    idPaciente
-                ]
-            );
+        // Si la operación en el modelo fue exitosa, redirige a la página de éxito.
+        if (result.success) {
+            res.redirect(`/admision/exito?nombrePaciente=${encodeURIComponent(result.nombrePaciente)}&infoCama=${encodeURIComponent(`Habitación ${result.camaAsignada.numero_habitacion}, Cama ${result.camaAsignada.numero_cama}`)}`);
         } else {
-            const [resultado] = await connection.execute(
-                `INSERT INTO pacientes (dni, nombre, apellido, fecha_nacimiento, sexo,
-                 direccion, telefono, email, grupo_sanguineo,
-                 alergias, antecedentes_medicos, motivo_internacion)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                [
-                    dni, nombre, apellido, fecha_nacimiento, sexo,
-                    direccion, telefono, email, grupo_sanguineo,
-                    alergias, antecedentes_medicos, motivo_internacion
-                ]
-            );
-            idPaciente = resultado.insertId;
+            // En teoría, admitirPaciente lanza un error si no es exitoso,
+            // pero este bloque es un fallback de seguridad.
+            res.status(500).render('error', { title: 'Error en la Admisión', message: 'No se pudo completar la admisión por un motivo desconocido.' });
         }
-
-        // 2. Lógica para asignar una cama
-        const [camasDisponibles] = await connection.execute(`
-            SELECT c.id_cama, c.numero_cama, h.id_habitacion, h.numero_habitacion, h.tipo_habitacion, p_ocupante.sexo AS sexo_ocupante
-            FROM camas c
-            JOIN habitaciones h ON c.id_habitacion = h.id_habitacion
-            LEFT JOIN pacientes p_ocupante ON c.id_paciente_ocupante = p_ocupante.id_paciente
-            WHERE c.estado = 'libre' AND c.higienizada = TRUE
-        `);
-
-        let camaSeleccionada = null;
-        for (const cama of camasDisponibles) {
-            if (cama.tipo_habitacion === 'individual') {
-                camaSeleccionada = cama;
-                break;
-            } else if (cama.tipo_habitacion === 'doble') {
-                const [otraCamaEnHabitacion] = await connection.execute(`
-                    SELECT c2.id_cama, c2.id_paciente_ocupante, p2.sexo
-                    FROM camas c2
-                    LEFT JOIN pacientes p2 ON c2.id_paciente_ocupante = p2.id_paciente
-                    WHERE c2.id_habitacion = ? AND c2.id_cama != ? AND c2.estado = 'ocupada'
-                `, [cama.id_habitacion, cama.id_cama]);
-
-                if (otraCamaEnHabitacion.length > 0) {
-                    const sexoOtroPaciente = otraCamaEnHabitacion[0].sexo;
-                    if (sexoOtroPaciente && sexoOtroPaciente !== sexo) {
-                        continue; // No se puede asignar esta cama, busca la siguiente
-                    }
-                }
-                camaSeleccionada = cama; // Esta cama doble es válida
-                break;
-            }
-        }
-
-        if (!camaSeleccionada) {
-            throw new Error('No hay camas disponibles que cumplan los requisitos de admisión en este momento.');
-        }
-
-        // 3. Actualizar el estado de la cama a 'ocupada' y asignarle el paciente
-        await connection.execute(
-            'UPDATE camas SET estado = ?, id_paciente_ocupante = ? WHERE id_cama = ?',
-            ['ocupada', idPaciente, camaSeleccionada.id_cama]
-        );
-
-        // 4. Registrar la internación del paciente
-        await connection.execute(
-            'INSERT INTO pacientes_internados (id_paciente, id_cama, fecha_ingreso, estado) VALUES (?, ?, NOW(), ?)',
-            [idPaciente, camaSeleccionada.id_cama, 'internado']
-        );
-
-        await connection.commit(); // Confirma la transacción si todas las operaciones fueron exitosas
-        res.redirect(`/admision/exito?nombrePaciente=${encodeURIComponent(`${nombre} ${apellido}`)}&infoCama=${encodeURIComponent(`Habitación ${camaSeleccionada.numero_habitacion}, Cama ${camaSeleccionada.numero_cama}`)}`);
-
     } catch (error) {
-        if (connection) {
-            await connection.rollback(); // Deshace la transacción en caso de error
-        }
-        console.error('❌ Error durante el proceso de admisión:', error);
-        res.status(500).render('error', { title: 'Error de Admisión', message: `No se pudo completar la admisión. ${error.message}` });
-    } finally {
-        if (connection) {
-            connection.release(); // Libera la conexión de vuelta al pool
-        }
+        // Captura cualquier error que ocurra durante el proceso de admisión (ej. no hay camas disponibles).
+        console.error('❌ Error durante el proceso de admisión en el controlador:', error);
+        // Renderiza una página de error, mostrando el mensaje de error al usuario.
+        res.status(400).render('error', { title: 'Error de Admisión', message: error.message || 'Ocurrió un error al procesar la admisión.' });
     }
 };
 
 /**
  * Muestra una lista de todos los pacientes registrados.
+ * Se accede vía GET a la ruta /pacientes/lista.
  * @param {Object} req - Objeto de solicitud de Express.
  * @param {Object} res - Objeto de respuesta de Express.
  */
 exports.listarPacientes = async (req, res) => {
     try {
-        const [filas] = await db.execute('SELECT id_paciente, dni, nombre, apellido, sexo, fecha_registro FROM pacientes ORDER BY fecha_registro DESC');
-        res.render('listaPacientes', { title: 'Lista de Pacientes', pacientes: filas });
-    }
-    catch (error) {
+        // Llama a la función del modelo para obtener todos los pacientes.
+        const pacientes = await pacienteModel.listarTodosLosPacientes();
+        // Renderiza la vista 'listaPacientes.pug' y le pasa la lista de pacientes.
+        res.render('listaPacientes', { title: 'Lista de Pacientes', pacientes });
+    } catch (error) {
+        // Captura y registra errores si no se puede obtener la lista de pacientes.
         console.error('❌ Error al obtener la lista de pacientes:', error);
+        // Renderiza una página de error para informar al usuario.
         res.status(500).render('error', { title: 'Error', message: 'No se pudo cargar la lista de pacientes.' });
     }
 };
 
 /**
  * Muestra la disponibilidad actual de camas.
+ * Se accede vía GET a la ruta /camas/disponibilidad.
  * @param {Object} req - Objeto de solicitud de Express.
  * @param {Object} res - Objeto de respuesta de Express.
  */
 exports.mostrarDisponibilidadCamas = async (req, res) => {
     try {
-        // Consulta para obtener el resumen de disponibilidad
-        const [resumen] = await db.execute(`
-            SELECT
-                SUM(CASE WHEN estado = 'ocupada' THEN 1 ELSE 0 END) AS camasOcupadas,
-                SUM(CASE WHEN estado = 'libre' AND higienizada = TRUE THEN 1 ELSE 0 END) AS camasDisponibles,
-                COUNT(*) AS totalCamas
-            FROM camas;
-        `);
-
-        // Consulta para obtener el detalle de camas con info de paciente
-        const [detalleCamas] = await db.execute(`
-            SELECT
-                c.id_cama,
-                c.numero_cama,
-                h.numero_habitacion,
-                h.tipo_habitacion,
-                a.nombre_ala,
-                c.estado,
-                c.higienizada,
-                p.nombre AS nombre_paciente,
-                p.apellido AS apellido_paciente,
-                p.sexo AS sexo_paciente
-            FROM camas c
-            JOIN habitaciones h ON c.id_habitacion = h.id_habitacion
-            JOIN alas a ON h.id_ala = a.id_ala
-            LEFT JOIN pacientes p ON c.id_paciente_ocupante = p.id_paciente
-            ORDER BY a.nombre_ala, h.numero_habitacion, c.numero_cama;
-        `);
-
+        // Llama a las funciones del modelo para obtener el resumen y el detalle de las camas.
+        const resumen = await pacienteModel.obtenerResumenCamas();
+        const detalleCamas = await pacienteModel.obtenerDetalleCamas();
+        // Renderiza la vista 'disponibilidadCamas.pug' con los datos obtenidos.
         res.render('disponibilidadCamas', {
             title: 'Disponibilidad de Camas',
-            resumen: resumen[0], // resumen[0] contiene el único resultado de la consulta SUM
+            resumen: resumen, // El modelo ya devuelve el objeto resumen directo
             detalleCamas: detalleCamas
         });
-
     } catch (error) {
+        // Captura y registra errores si no se puede obtener la disponibilidad de camas.
         console.error('❌ Error al obtener la disponibilidad de camas:', error);
+        // Renderiza una página de error para informar al usuario.
         res.status(500).render('error', { title: 'Error', message: 'No se pudo cargar la disponibilidad de camas.' });
     }
 };
