@@ -1,4 +1,3 @@
-// controllers/pacienteController.js
 const db = require('../config/db'); // Importa la conexión a la base de datos
 
 /**
@@ -132,7 +131,6 @@ exports.procesarAdmision = async (req, res) => {
 
 /**
  * Muestra una lista de todos los pacientes registrados.
- * (Opcional: útil para verificar registros)
  * @param {Object} req - Objeto de solicitud de Express.
  * @param {Object} res - Objeto de respuesta de Express.
  */
@@ -144,5 +142,53 @@ exports.listarPacientes = async (req, res) => {
     catch (error) {
         console.error('❌ Error al obtener la lista de pacientes:', error);
         res.status(500).render('error', { title: 'Error', message: 'No se pudo cargar la lista de pacientes.' });
+    }
+};
+
+/**
+ * Muestra la disponibilidad actual de camas.
+ * @param {Object} req - Objeto de solicitud de Express.
+ * @param {Object} res - Objeto de respuesta de Express.
+ */
+exports.mostrarDisponibilidadCamas = async (req, res) => {
+    try {
+        // Consulta para obtener el resumen de disponibilidad
+        const [resumen] = await db.execute(`
+            SELECT
+                SUM(CASE WHEN estado = 'ocupada' THEN 1 ELSE 0 END) AS camasOcupadas,
+                SUM(CASE WHEN estado = 'libre' AND higienizada = TRUE THEN 1 ELSE 0 END) AS camasDisponibles,
+                COUNT(*) AS totalCamas
+            FROM camas;
+        `);
+
+        // Consulta para obtener el detalle de camas con info de paciente
+        const [detalleCamas] = await db.execute(`
+            SELECT
+                c.id_cama,
+                c.numero_cama,
+                h.numero_habitacion,
+                h.tipo_habitacion,
+                a.nombre_ala,
+                c.estado,
+                c.higienizada,
+                p.nombre AS nombre_paciente,
+                p.apellido AS apellido_paciente,
+                p.sexo AS sexo_paciente
+            FROM camas c
+            JOIN habitaciones h ON c.id_habitacion = h.id_habitacion
+            JOIN alas a ON h.id_ala = a.id_ala
+            LEFT JOIN pacientes p ON c.id_paciente_ocupante = p.id_paciente
+            ORDER BY a.nombre_ala, h.numero_habitacion, c.numero_cama;
+        `);
+
+        res.render('disponibilidadCamas', {
+            title: 'Disponibilidad de Camas',
+            resumen: resumen[0], // resumen[0] contiene el único resultado de la consulta SUM
+            detalleCamas: detalleCamas
+        });
+
+    } catch (error) {
+        console.error('❌ Error al obtener la disponibilidad de camas:', error);
+        res.status(500).render('error', { title: 'Error', message: 'No se pudo cargar la disponibilidad de camas.' });
     }
 };

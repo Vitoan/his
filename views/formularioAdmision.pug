@@ -1,51 +1,55 @@
 extends layout.pug
 
 block content
-  h2 Admisión y Recepción de Pacientes
+  h2(class=['text-primary', 'text-3xl', 'font-bold', 'text-center', 'mb-8']) Admisión y Recepción de Pacientes
 
-  form(action="/admision", method="POST")
-    h3 Datos Personales
-    .form-group
-      label(for="dni") DNI:
-      input(type="text", id="dni", name="dni", required, placeholder="Ingrese DNI", pattern="[0-9]{7,8}", title="Ingrese un DNI válido de 7 u 8 dígitos")
-    .form-group
-      label(for="nombre") Nombre:
-      input(type="text", id="nombre", name="nombre", required, placeholder="Ingrese nombre completo")
-    .form-group
-      label(for="apellido") Apellido:
-      input(type="text", id="apellido", name="apellido", required, placeholder="Ingrese apellido completo")
-    .form-group
-      label(for="fecha_nacimiento") Fecha de Nacimiento:
-      input(type="date", id="fecha_nacimiento", name="fecha_nacimiento", required)
-    .form-group
-      label(for="sexo") Sexo:
-      select(id="sexo", name="sexo", required)
-        option(value="") Seleccione...
-        option(value="M") Masculino
-        option(value="F") Femenino
-        option(value="Otro") Otro
-    .form-group
-      label(for="direccion") Dirección:
-      input(type="text", id="direccion", name="direccion", placeholder="Calle, número, piso, dpto.")
-    .form-group
-      label(for="telefono") Teléfono:
-      input(type="tel", id="telefono", name="telefono", placeholder="Ej: 3544123456", pattern="[0-9]{10}", title="Ingrese un número de teléfono de 10 dígitos")
-    .form-group
-      label(for="email") Email:
-      input(type="email", id="email", name="email", placeholder="correo@ejemplo.com")
+  form(action="/admision", method="POST", class=['space-y-6'])
+    .bg-gray-50(class=['p-6', 'rounded-lg', 'shadow-inner'])
+      h3(class=['text-xl', 'font-semibold', 'text-gray-800', 'mb-4']) Datos Personales
+      .grid(class=['grid-cols-1', 'md:grid-cols-2', 'gap-4'])
+        .form-group
+          label(for="dni", class=['block', 'text-sm', 'font-medium', 'text-gray-700']) DNI:
+          input(type="text", id="dni", name="dni", required, placeholder="Ingrese DNI", pattern="[0-9]{7,8}", title="Ingrese un DNI válido de 7 u 8 dígitos", class=['mt-1', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-primary', 'focus:ring', 'focus:ring-primary', 'focus:ring-opacity-50', 'p-2'])
+        .form-group
+          label(for="nombre", class=['block', 'text-sm', 'font-medium', 'text-gray-700']) Nombre:
+          input(type="text", id="nombre", name="nombre", required, placeholder="Ingrese nombre completo", class=['mt-1', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-primary', 'focus:ring', 'focus:ring-primary', 'focus:ring-opacity-50', 'p-2'])
+        .form-group
+          label(for="apellido", class=['block', 'text-sm', 'font-medium', 'text-gray-700']) Apellido:
+          input(type="text", id="apellido", name="apellido", required, placeholder="Ingrese apellido completo", class=['mt-1', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-primary', 'focus:ring', 'focus:ring-primary', 'focus:ring-opacity-50', 'p-2'])
+        .form-group
+          label(for="fecha_nacimiento", class=['block', 'text-sm', 'font-medium', 'text-gray-700']) Fecha de Nacimiento:
+          input(type="date", id="fecha_nacimiento", name="fecha_nacimiento", required, class=['mt-1', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-primary', 'focus:ring', 'focus:ring-primary', 'focus:ring-opacity-50', 'p-2'])
+        .form-group
+          label(for="sexo", class=['block', 'text-sm', 'font-medium', 'text-gray-700']) Sexo:
+          select(id="sexo", name="sexo", required, class=['mt-1', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-primary', 'focus:ring', 'focus:ring-primary', 'focus:ring-opacity-50', 'p-2'])
+            option(value="") Seleccione...
+            option(value="M") Masculino
+            option(value="F") Femenino
+            option(value="Otro") Otro
+        .form-group
+          label(for="direccion", class=['block', 'text-sm', 'font-medium', 'text-gray-700']) Dirección:
+          input(type="text", id="direccion", name="direccion", placeholder="Calle, número, piso, dpto.", class=['mt-1', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-primary', 'focus:ring', 'focus:ring-primary', 'focus:ring-opacity-50', 'p-2'])
+        .form-group
+          label(for="telefono", class=['block', 'text-sm', 'font-medium', 'text-gray-700']) Teléfono:
+          input(type="tel", id="telefono", name="telefono", placeholder="Ej: 3544123456", pattern="[0-9]{10}", title="Ingrese un número de teléfono de 10 dígitos", class=['mt-1', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-primary', 'focus:ring', 'focus:ring-primary', 'focus:ring-opacity-50', 'p-2'])
+        .form-group
+          label(for="email", class=['block', 'text-sm', 'font-medium', 'text-gray-700']) Email:
+          input(type="email", id="email", name="email", placeholder="correo@ejemplo.com", class=['mt-1', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-primary', 'focus:ring', 'focus:ring-primary', 'focus:ring-opacity-50', 'p-2'])
 
-    h3 Historial Médico y Motivo de Internación
-    .form-group
-      label(for="grupo_sanguineo") Grupo Sanguíneo:
-      input(type="text", id="grupo_sanguineo", name="grupo_sanguineo", placeholder="Ej: A+, O-", pattern="^(A|B|AB|O)[+-]$", title="Ej: A+, O-")
-    .form-group
-      label(for="alergias") Alergias:
-      textarea(id="alergias", name="alergias", rows="3", placeholder="Mencione alergias conocidas (ej: penicilina, polen)")
-    .form-group
-      label(for="antecedentes_medicos") Antecedentes Médicos:
-      textarea(id="antecedentes_medicos", name="antecedentes_medicos", rows="3", placeholder="Cirugías previas, enfermedades crónicas (diabetes, hipertensión), etc.")
-    .form-group
-      label(for="motivo_internacion") Motivo de Internación:
-      textarea(id="motivo_internacion", name="motivo_internacion", rows="3", required, placeholder="Breve descripción del motivo de internación actual")
+    .bg-gray-50(class=['p-6', 'rounded-lg', 'shadow-inner'])
+      h3(class=['text-xl', 'font-semibold', 'text-gray-800', 'mb-4']) Historial Médico y Motivo de Internación
+      .grid(class=['grid-cols-1', 'gap-4'])
+        .form-group
+          label(for="grupo_sanguineo", class=['block', 'text-sm', 'font-medium', 'text-gray-700']) Grupo Sanguíneo:
+          input(type="text", id="grupo_sanguineo", name="grupo_sanguineo", placeholder="Ej: A+, O-", pattern="^(A|B|AB|O)[+-]$", title="Ej: A+, O-", class=['mt-1', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-primary', 'focus:ring', 'focus:ring-primary', 'focus:ring-opacity-50', 'p-2'])
+        .form-group
+          label(for="alergias", class=['block', 'text-sm', 'font-medium', 'text-gray-700']) Alergias:
+          textarea(id="alergias", name="alergias", rows="3", placeholder="Mencione alergias conocidas (ej: penicilina, polen)", class=['mt-1', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-primary', 'focus:ring', 'focus:ring-primary', 'focus:ring-opacity-50', 'p-2'])
+        .form-group
+          label(for="antecedentes_medicos", class=['block', 'text-sm', 'font-medium', 'text-gray-700']) Antecedentes Médicos:
+          textarea(id="antecedentes_medicos", name="antecedentes_medicos", rows="3", placeholder="Cirugías previas, enfermedades crónicas (diabetes, hipertensión), etc.", class=['mt-1', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-primary', 'focus:ring', 'focus:ring-primary', 'focus:ring-opacity-50', 'p-2'])
+        .form-group
+          label(for="motivo_internacion", class=['block', 'text-sm', 'font-medium', 'text-gray-700']) Motivo de Internación:
+          textarea(id="motivo_internacion", name="motivo_internacion", rows="3", required, placeholder="Breve descripción del motivo de internación actual", class=['mt-1', 'block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm', 'focus:border-primary', 'focus:ring', 'focus:ring-primary', 'focus:ring-opacity-50', 'p-2'])
 
-    button(type="submit") Registrar Admisión
+    button(type="submit", class=['bg-success', 'hover:bg-green-700', 'text-white', 'font-bold', 'py-3', 'px-6', 'rounded-full', 'transition', 'duration-300', 'ease-in-out', 'shadow-lg', 'hover:shadow-xl', 'block', 'w-full', 'max-w-xs', 'mx-auto', 'mt-8']) Registrar Admisión

@@ -1,0 +1,53 @@
+extends layout.pug
+
+block content
+  h2(class=['text-primary', 'text-3xl', 'font-bold', 'text-center', 'mb-8']) Disponibilidad de Camas
+
+  // Resumen de Camas
+  .bg-white(class=['p-6', 'rounded-lg', 'shadow-md', 'mb-8'])
+    h3(class=['text-xl', 'font-semibold', 'text-gray-800', 'mb-4']) Resumen General
+    .grid(class=['grid-cols-1', 'md:grid-cols-3', 'gap-4', 'text-center'])
+      .bg-blue-100(class=['p-4', 'rounded-lg', 'flex', 'flex-col', 'items-center', 'justify-center', 'shadow-sm'])
+        span(class=['text-4xl', 'font-bold', 'text-primary']) #{resumen.totalCamas || 0}
+        span(class=['text-gray-600', 'text-sm']) Total de Camas
+      .bg-green-100(class=['p-4', 'rounded-lg', 'flex', 'flex-col', 'items-center', 'justify-center', 'shadow-sm'])
+        span(class=['text-4xl', 'font-bold', 'text-success']) #{resumen.camasDisponibles || 0}
+        span(class=['text-gray-600', 'text-sm']) Camas Disponibles (Libres e Higienizadas)
+      .bg-red-100(class=['p-4', 'rounded-lg', 'flex', 'flex-col', 'items-center', 'justify-center', 'shadow-sm'])
+        span(class=['text-4xl', 'font-bold', 'text-danger']) #{resumen.camasOcupadas || 0}
+        span(class=['text-gray-600', 'text-sm']) Camas Ocupadas
+
+  // Detalle de Camas
+  .bg-white(class=['p-6', 'rounded-lg', 'shadow-md'])
+    h3(class=['text-xl', 'font-semibold', 'text-gray-800', 'mb-4']) Detalle por Cama
+    if detalleCamas && detalleCamas.length > 0
+      .overflow-x-auto(class=['relative', 'shadow-md', 'sm:rounded-lg'])
+        table(class=['w-full', 'text-sm', 'text-left', 'text-gray-500', 'dark:text-gray-400'])
+          thead(class=['text-xs', 'text-gray-700', 'uppercase', 'bg-gray-50', 'dark:bg-gray-700', 'dark:text-gray-400'])
+            tr
+              th(scope="col", class=['py-3', 'px-6']) ID Cama
+              th(scope="col", class=['py-3', 'px-6']) No. Cama
+              th(scope="col", class=['py-3', 'px-6']) Habitación
+              th(scope="col", class=['py-3', 'px-6']) Tipo Hab.
+              th(scope="col", class=['py-3', 'px-6']) Ala
+              th(scope="col", class=['py-3', 'px-6']) Estado
+              th(scope="col", class=['py-3', 'px-6']) Higienizada
+              th(scope="col", class=['py-3', 'px-6']) Paciente Ocupante
+          tbody
+            each cama in detalleCamas
+              tr(class=['bg-white', 'border-b', 'dark:bg-gray-800', 'dark:border-gray-700', 'hover:bg-gray-50', 'dark:hover:bg-gray-600', cama.estado === 'ocupada' ? 'bg-red-50' : (cama.estado === 'libre' && cama.higienizada ? 'bg-green-50' : 'bg-yellow-50')])
+                td(class=['py-4', 'px-6']) #{cama.id_cama}
+                td(class=['py-4', 'px-6']) #{cama.numero_cama}
+                td(class=['py-4', 'px-6']) #{cama.numero_habitacion}
+                td(class=['py-4', 'px-6']) #{cama.tipo_habitacion}
+                td(class=['py-4', 'px-6']) #{cama.nombre_ala}
+                td(class=['py-4', 'px-6'])
+                  span(class=[cama.estado === 'ocupada' ? 'text-red-600' : (cama.estado === 'libre' && cama.higienizada ? 'text-green-600' : 'text-yellow-600'), 'font-semibold']) #{cama.estado}
+                td(class=['py-4', 'px-6'])
+                  span(class=[cama.higienizada ? 'text-green-600' : 'text-red-600']) #{cama.higienizada ? 'Sí' : 'No'}
+                td(class=['py-4', 'px-6']) #{cama.nombre_paciente ? cama.nombre_paciente + ' ' + cama.apellido_paciente + ' (' + cama.sexo_paciente + ')' : 'Vacía'}
+    else
+      p(class=['text-center', 'text-gray-600', 'text-lg', 'py-8']) No se encontró información de camas.
+
+  .flex(class=['justify-center', 'mt-8'])
+    a(href="/", class=['bg-secondary', 'hover:bg-gray-700', 'text-white', 'font-bold', 'py-3', 'px-6', 'rounded-full', 'transition', 'duration-300', 'ease-in-out', 'shadow-lg', 'hover:shadow-xl', 'text-lg']) Volver a Inicio

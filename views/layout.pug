@@ -4,22 +4,41 @@ html(lang="es")
     meta(charset="UTF-8")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     title= title || 'Sistema Hospitalario HIS'
-    link(rel="stylesheet", href="/css/style.css") 
-    
-    header
-      .container
-        h1 HIS - Sistema Hospitalario
+    // Enlace a tu CSS base personalizado
+    link(rel="stylesheet", href="/css/style.css")
+    // CDN de Tailwind CSS - ¡Debe ir después de tu CSS personalizado si quieres sobrescribir!
+    script(src="https://cdn.tailwindcss.com")
+    // Configuración de Tailwind CSS para usar el color principal
+    script.
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#007bff',
+              secondary: '#6c757d',
+              success: '#28a745',
+              danger: '#dc3545',
+              info: '#17a2b8',
+              warning: '#ffc107',
+            }
+          }
+        }
+      }
+  body(class=['bg-gray-100', 'text-gray-900', 'flex', 'flex-col', 'min-h-screen'])
+    header(class=['bg-primary', 'text-white', 'p-4', 'shadow-md'])
+      .container(class=['mx-auto', 'flex', 'flex-col', 'md:flex-row', 'justify-between', 'items-center'])
+        h1(class=['text-3xl', 'font-bold', 'mb-2', 'md:mb-0']) HIS - Sistema Hospitalario
         nav
-          ul
-            li
-              a(href="/") Inicio
-            li
-              a(href="/admision") Admisión de Pacientes
-            li
-              a(href="/pacientes/lista") Lista de Pacientes
-    main
-      .container
+          ul(class=['flex', 'space-x-4'])
+            li: a(href="/", class=['text-white', 'hover:text-gray-200', 'transition', 'duration-300', 'font-semibold']) Inicio
+            li: a(href="/admision", class=['text-white', 'hover:text-gray-200', 'transition', 'duration-300', 'font-semibold']) Admisión de Pacientes
+            li: a(href="/pacientes/lista", class=['text-white', 'hover:text-gray-200', 'transition', 'duration-300', 'font-semibold']) Lista de Pacientes
+            li: a(href="/camas/disponibilidad", class=['text-white', 'hover:text-gray-200', 'transition', 'duration-300', 'font-semibold']) Disponibilidad de Camas
+
+    main(class=['flex-grow', 'py-8'])
+      .container(class=['mx-auto', 'bg-white', 'p-8', 'rounded-lg', 'shadow-lg'])
         block content // Aquí se inyectará el contenido específico de cada vista
-    footer
-      .container
-        p &copy; #{new Date().getFullYear()} Sistema HIS. Todos los derechos reservados.
+
+    footer(class=['bg-gray-800', 'text-white', 'p-4', 'text-center', 'mt-8', 'shadow-inner'])
+      .container.mx-auto
+        p.text-sm © #{new Date().getFullYear()} Sistema HIS. Desarrollado por [Tu Nombre/Equipo]. Todos los derechos reservados.

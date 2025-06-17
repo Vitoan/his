@@ -1,26 +1,29 @@
 extends layout.pug
 
 block content
-  h2 Lista de Pacientes
+  h2(class=['text-primary', 'text-3xl', 'font-bold', 'text-center', 'mb-8']) Lista de Pacientes
   if pacientes && pacientes.length > 0
-    table.patient-table
-      thead
-        tr
-          th ID
-          th DNI
-          th Nombre
-          th Apellido
-          th Sexo
-          th Fecha de Registro
-      tbody
-        each paciente in pacientes
+    .overflow-x-auto(class=['relative', 'shadow-md', 'sm:rounded-lg'])
+      table(class=['w-full', 'text-sm', 'text-left', 'text-gray-500', 'dark:text-gray-400'])
+        thead(class=['text-xs', 'text-gray-700', 'uppercase', 'bg-gray-50', 'dark:bg-gray-700', 'dark:text-gray-400'])
           tr
-            td #{paciente.id_paciente}
-            td #{paciente.dni}
-            td #{paciente.nombre}
-            td #{paciente.apellido}
-            td #{paciente.sexo}
-            td #{paciente.fecha_registro ? paciente.fecha_registro.toISOString().slice(0, 10) : 'N/A'}
+            th(scope="col", class=['py-3', 'px-6']) ID
+            th(scope="col", class=['py-3', 'px-6']) DNI
+            th(scope="col", class=['py-3', 'px-6']) Nombre
+            th(scope="col", class=['py-3', 'px-6']) Apellido
+            th(scope="col", class=['py-3', 'px-6']) Sexo
+            th(scope="col", class=['py-3', 'px-6']) Fecha de Registro
+        tbody
+          each paciente in pacientes
+            tr(class=['bg-white', 'border-b', 'dark:bg-gray-800', 'dark:border-gray-700', 'hover:bg-gray-50', 'dark:hover:bg-gray-600'])
+              td(class=['py-4', 'px-6']) #{paciente.id_paciente}
+              td(class=['py-4', 'px-6']) #{paciente.dni}
+              td(class=['py-4', 'px-6']) #{paciente.nombre}
+              td(class=['py-4', 'px-6']) #{paciente.apellido}
+              td(class=['py-4', 'px-6']) #{paciente.sexo}
+              td(class=['py-4', 'px-6']) #{paciente.fecha_registro ? paciente.fecha_registro.toISOString().slice(0, 10) : 'N/A'}
   else
-    p No hay pacientes registrados aún.
-  a(href="/admision") Volver al formulario de admisión
+    p(class=['text-center', 'text-gray-600', 'text-lg', 'py-8']) No hay pacientes registrados aún.
+
+  .flex(class=['justify-center', 'mt-8'])
+    a(href="/admision", class=['bg-primary', 'hover:bg-blue-700', 'text-white', 'font-bold', 'py-3', 'px-6', 'rounded-full', 'transition', 'duration-300', 'ease-in-out', 'shadow-lg', 'hover:shadow-xl', 'text-lg']) Volver al formulario de admisión
