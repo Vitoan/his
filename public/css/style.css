@@ -178,3 +178,59 @@ a:hover {
 .patient-table tbody tr:hover {
     background-color: #e2f0fd;
 }
+
+/* Estilos para la página de bienvenida */
+.welcome-section {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    margin-top: 50px;
+}
+
+.welcome-section h2 {
+    color: #007bff;
+    font-size: 2.5rem;
+    margin-bottom: 25px;
+    border-bottom: none; /* Quita el borde si lo tiene del estilo general h2 */
+    padding-bottom: 0;
+}
+
+.welcome-section p {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.welcome-buttons {
+    margin-top: 30px;
+}
+
+.button-link {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin: 0 10px;
+}
+
+.button-link:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    text-decoration: none; /* Asegura que no haya subrayado en hover */
+}
+
+.note {
+    font-style: italic;
+    color: #777;
+    margin-top: 40px;
+    font-size: 0.9rem;
+}
