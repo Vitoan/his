@@ -1,15 +1,25 @@
 doctype html
-html
+html(lang="es")
   head
     meta(charset="UTF-8")
-    title HIS - Admisión
-    link(rel="stylesheet", href="/styles.css")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title= title || 'Sistema Hospitalario HIS'
+    link(rel="stylesheet", href="/css/style.css") // Enlaza tu archivo CSS
   body
     header
-      h1 Módulo de Admisión
-      nav
-        ul
-          li: a(href="/admision/vista") Inicio
-          li: a(href="/admision/nueva") Nueva Admisión
+      .container
+        h1 HIS - Sistema Hospitalario
+        nav
+          ul
+            li
+              a(href="/") Inicio
+            li
+              a(href="/admision") Admisión de Pacientes
+            li
+              a(href="/pacientes/lista") Lista de Pacientes
     main
-      block content
+      .container
+        block content // Aquí se inyectará el contenido específico de cada vista
+    footer
+      .container
+        p &copy; #{new Date().getFullYear()} Sistema HIS. Todos los derechos reservados.
