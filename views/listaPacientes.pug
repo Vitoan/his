@@ -1,0 +1,26 @@
+extends layout.pug
+
+block content
+  h2 Lista de Pacientes
+  if pacientes && pacientes.length > 0
+    table.patient-table
+      thead
+        tr
+          th ID
+          th DNI
+          th Nombre
+          th Apellido
+          th Sexo
+          th Fecha de Registro
+      tbody
+        each paciente in pacientes
+          tr
+            td #{paciente.id_paciente}
+            td #{paciente.dni}
+            td #{paciente.nombre}
+            td #{paciente.apellido}
+            td #{paciente.sexo}
+            td #{paciente.fecha_registro ? paciente.fecha_registro.toISOString().slice(0, 10) : 'N/A'}
+  else
+    p No hay pacientes registrados aún.
+  a(href="/admision") Volver al formulario de admisión

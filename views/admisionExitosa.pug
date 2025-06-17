@@ -1,0 +1,10 @@
+extends layout.pug
+
+block content
+  h2 ✅ Admisión Exitosa
+  p El paciente #[strong #{nombrePaciente}] ha sido admitido correctamente.
+  p #[strong Información de la Cama Asignada:] #{infoCama}
+  p ¡Gracias por usar nuestro sistema!
+  a(href="/admision") Realizar otra admisión
+  span  |
+  a(href="/pacientes/lista") Ver lista de pacientes

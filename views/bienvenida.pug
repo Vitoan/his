@@ -1,0 +1,14 @@
+extends layout.pug
+
+block content
+  .welcome-section
+    h2 Bienvenido al Sistema Hospitalario HIS
+    p Este es el módulo de Admisión y Recepción de Pacientes.
+    p Aquí podrás gestionar la entrada de nuevos pacientes, asignación de camas y visualizar información relevante.
+
+    .welcome-buttons
+      a.button-link(href="/admision") Ir al Módulo de Admisión
+      a.button-link(href="/pacientes/lista") Ver Pacientes Registrados
+
+    // Puedes añadir más información o elementos aquí
+    p.note Si tienes alguna duda, consulta la documentación del sistema.
