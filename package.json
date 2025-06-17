@@ -16,7 +16,6 @@
     "url": "https://github.com/Vitoan/his/issues"
   },
   "homepage": "https://github.com/Vitoan/his#readme",
-  "description": "",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
@@ -30,5 +29,7 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
-  }
+  },
+  "keywords": [],
+  "description": ""
 }

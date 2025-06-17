@@ -1,0 +1,51 @@
+extends layout.pug
+
+block content
+  h2 Admisión y Recepción de Pacientes
+
+  form(action="/admision", method="POST")
+    h3 Datos Personales
+    .form-group
+      label(for="dni") DNI:
+      input(type="text", id="dni", name="dni", required, placeholder="Ingrese DNI", pattern="[0-9]{7,8}", title="Ingrese un DNI válido de 7 u 8 dígitos")
+    .form-group
+      label(for="nombre") Nombre:
+      input(type="text", id="nombre", name="nombre", required, placeholder="Ingrese nombre completo")
+    .form-group
+      label(for="apellido") Apellido:
+      input(type="text", id="apellido", name="apellido", required, placeholder="Ingrese apellido completo")
+    .form-group
+      label(for="fecha_nacimiento") Fecha de Nacimiento:
+      input(type="date", id="fecha_nacimiento", name="fecha_nacimiento", required)
+    .form-group
+      label(for="sexo") Sexo:
+      select(id="sexo", name="sexo", required)
+        option(value="") Seleccione...
+        option(value="M") Masculino
+        option(value="F") Femenino
+        option(value="Otro") Otro
+    .form-group
+      label(for="direccion") Dirección:
+      input(type="text", id="direccion", name="direccion", placeholder="Calle, número, piso, dpto.")
+    .form-group
+      label(for="telefono") Teléfono:
+      input(type="tel", id="telefono", name="telefono", placeholder="Ej: 3544123456", pattern="[0-9]{10}", title="Ingrese un número de teléfono de 10 dígitos")
+    .form-group
+      label(for="email") Email:
+      input(type="email", id="email", name="email", placeholder="correo@ejemplo.com")
+
+    h3 Historial Médico y Motivo de Internación
+    .form-group
+      label(for="grupo_sanguineo") Grupo Sanguíneo:
+      input(type="text", id="grupo_sanguineo", name="grupo_sanguineo", placeholder="Ej: A+, O-", pattern="^(A|B|AB|O)[+-]$", title="Ej: A+, O-")
+    .form-group
+      label(for="alergias") Alergias:
+      textarea(id="alergias", name="alergias", rows="3", placeholder="Mencione alergias conocidas (ej: penicilina, polen)")
+    .form-group
+      label(for="antecedentes_medicos") Antecedentes Médicos:
+      textarea(id="antecedentes_medicos", name="antecedentes_medicos", rows="3", placeholder="Cirugías previas, enfermedades crónicas (diabetes, hipertensión), etc.")
+    .form-group
+      label(for="motivo_internacion") Motivo de Internación:
+      textarea(id="motivo_internacion", name="motivo_internacion", rows="3", required, placeholder="Breve descripción del motivo de internación actual")
+
+    button(type="submit") Registrar Admisión
