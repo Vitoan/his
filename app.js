@@ -1,4 +1,3 @@
-// app.js
 // Este archivo configura y arranca la aplicación Express.
 // Define middlewares, rutas y el manejo de errores.
 
@@ -11,6 +10,7 @@ require('dotenv').config(); // Carga las variables de entorno del archivo .env
 // Se asume que 'pacienteRoutes.js' está en la carpeta 'routes/'
 const pacienteRoutes = require('./routes/pacienteRoutes');
 // Importar el controlador de pacientes directamente para usarlo en app.get('/pacientes/lista')
+// y para la nueva ruta de disponibilidad de camas.
 const pacienteController = require('./controllers/pacienteController');
 
 
@@ -59,6 +59,9 @@ app.use('/admision', pacienteRoutes);
 // 'app.use('/pacientes', pacienteRoutes);' junto con 'app.use('/admision', pacienteRoutes);'.
 app.get('/pacientes/lista', pacienteController.listarPacientes);
 
+// Nueva ruta para la disponibilidad de camas
+app.get('/camas/disponibilidad', pacienteController.mostrarDisponibilidadCamas);
+
 
 // --- Manejo de Errores ---
 
@@ -85,4 +88,5 @@ app.listen(PORT, () => {
     console.log(`🌐 URL para la Página de Bienvenida: http://localhost:${PORT}`);
     console.log(`🌐 URL para el módulo de Admisión: http://localhost:${PORT}/admision`);
     console.log(`🌐 URL para la Lista de Pacientes: http://localhost:${PORT}/pacientes/lista`);
+    console.log(`🌐 URL para la Disponibilidad de Camas: http://localhost:${PORT}/camas/disponibilidad`);
 });

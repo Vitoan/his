@@ -26,16 +26,17 @@ html(lang="es")
       }
   body(class=['bg-gray-100', 'text-gray-900', 'flex', 'flex-col', 'min-h-screen'])
     header(class=['bg-primary', 'text-white', 'p-4', 'shadow-md'])
-      .container.mx-auto(class=['flex', 'flex-col', 'md:flex-row', 'justify-between', 'items-center'])
+      .container(class=['mx-auto', 'flex', 'flex-col', 'md:flex-row', 'justify-between', 'items-center'])
         h1(class=['text-3xl', 'font-bold', 'mb-2', 'md:mb-0']) HIS - Sistema Hospitalario
         nav
           ul(class=['flex', 'space-x-4'])
             li: a(href="/", class=['text-white', 'hover:text-gray-200', 'transition', 'duration-300', 'font-semibold']) Inicio
             li: a(href="/admision", class=['text-white', 'hover:text-gray-200', 'transition', 'duration-300', 'font-semibold']) Admisión de Pacientes
             li: a(href="/pacientes/lista", class=['text-white', 'hover:text-gray-200', 'transition', 'duration-300', 'font-semibold']) Lista de Pacientes
+            li: a(href="/camas/disponibilidad", class=['text-white', 'hover:text-gray-200', 'transition', 'duration-300', 'font-semibold']) Disponibilidad de Camas
 
     main(class=['flex-grow', 'py-8'])
-      .container.mx-auto(class=['bg-white', 'p-8', 'rounded-lg', 'shadow-lg'])
+      .container(class=['mx-auto', 'bg-white', 'p-8', 'rounded-lg', 'shadow-lg'])
         block content // Aquí se inyectará el contenido específico de cada vista
 
     footer(class=['bg-gray-800', 'text-white', 'p-4', 'text-center', 'mt-8', 'shadow-inner'])
