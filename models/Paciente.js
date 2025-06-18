@@ -1,4 +1,3 @@
-// models/Paciente.js (Nombre del archivo del modelo: Paciente.js)
 // Este archivo contiene la lógica para interactuar con las tablas 'pacientes' y 'camas' en la base de datos,
 // incluyendo la lógica de las transacciones y la asignación de camas.
 
@@ -143,7 +142,7 @@ async function admitirPaciente(pacienteData) {
     await connection.beginTransaction(); // Iniciar la transacción
 
     let id_paciente;
-    // Pasa la conexión de la transacción a buscarPacientePorDNI
+    // Pasa la conexión de la transacción a buscarPacientePorDNI para ver cambios no confirmados
     const pacienteExistente = await buscarPacientePorDNI(pacienteData.dni, connection);
 
     if (pacienteExistente) {
@@ -151,18 +150,38 @@ async function admitirPaciente(pacienteData) {
       await actualizarPaciente(pacienteExistente.id_paciente, pacienteData, connection);
       id_paciente = pacienteExistente.id_paciente;
       console.log(`[admitirPaciente] Paciente con DNI ${pacienteData.dni} actualizado. ID: ${id_paciente}`);
+
+      // --- NUEVA LÓGICA: Liberar cama anterior si el paciente ya ocupaba una ---
+      // Buscar si este paciente ya estaba ocupando alguna cama
+      const [previousBedRows] = await connection.execute(
+        'SELECT id_cama FROM camas WHERE id_paciente_ocupante = ?',
+        [id_paciente]
+      );
+
+      if (previousBedRows.length > 0) {
+        const previousCamaId = previousBedRows[0].id_cama;
+        console.log(`[admitirPaciente] Paciente ${id_paciente} previamente ocupaba cama ${previousCamaId}. Liberando...`);
+        // Actualizar la cama anterior: estado a 'higienizacion_pendiente' y id_paciente_ocupante a NULL
+        await connection.execute(
+          'UPDATE camas SET estado = ?, id_paciente_ocupante = NULL WHERE id_cama = ?',
+          ['higienizacion_pendiente', previousCamaId] // Se marca para limpieza al dar de alta
+        );
+        console.log(`[admitirPaciente] Cama ${previousCamaId} liberada y puesta en estado 'higienizacion_pendiente'.`);
+      }
+      // --- FIN NUEVA LÓGICA ---
+
     } else {
       // Si el paciente no existe, insertar uno nuevo
       id_paciente = await insertarPaciente(pacienteData, connection);
       console.log(`[admitirPaciente] Nuevo paciente insertado. ID: ${id_paciente}`);
     }
 
-    // --- IMPORTANT: ADD THIS VALIDATION AND LOGS ---
+    // --- IMPORTANTE: VALIDACIÓN Y LOGS ---
     if (!id_paciente || typeof id_paciente !== 'number' || id_paciente <= 0) {
         throw new Error('Error interno: El ID de paciente obtenido es inválido. No se puede proceder con la asignación de cama.');
     }
     console.log(`[admitirPaciente] Verificando ID de paciente para asignación: ${id_paciente}`);
-    // --- END IMPORTANT VALIDATION ---
+    // --- FIN VALIDACIÓN IMPORTANTE ---
 
 
     // Buscar una cama disponible
