@@ -1,85 +1,129 @@
--- db.sql
--- Creación de la base de datos (si no existe)
-CREATE DATABASE IF NOT EXISTS his_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE his_db;
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
 
--- Tabla para almacenar información de los pacientes
-CREATE TABLE IF NOT EXISTS pacientes (
-    id_paciente INT AUTO_INCREMENT PRIMARY KEY,
-    dni VARCHAR(20) UNIQUE NOT NULL,
-    nombre VARCHAR(100) NOT NULL,
-    apellido VARCHAR(100) NOT NULL,
-    fecha_nacimiento DATE NOT NULL,
-    sexo ENUM('M', 'F', 'Otro') NOT NULL,
-    direccion VARCHAR(255),
-    telefono VARCHAR(20),
-    email VARCHAR(100),
-    grupo_sanguineo VARCHAR(5),
-    alergias TEXT,
-    antecedentes_medicos TEXT,
-    motivo_internacion TEXT,
-    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+-- ----------------------------
+-- Table structure for alas
+-- ----------------------------
+DROP TABLE IF EXISTS `alas`;
+CREATE TABLE `alas` (
+  `id_ala` int NOT NULL AUTO_INCREMENT,
+  `nombre_ala` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`id_ala`) USING BTREE,
+  UNIQUE INDEX `nombre_ala`(`nombre_ala` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
--- Tabla para las alas del hospital (Ej: Ala A, Ala B)
-CREATE TABLE IF NOT EXISTS alas (
-    id_ala INT AUTO_INCREMENT PRIMARY KEY,
-    nombre_ala VARCHAR(50) UNIQUE NOT NULL
-);
+-- ----------------------------
+-- Records of alas
+-- ----------------------------
+INSERT INTO `alas` VALUES (1, 'Ala A');
+INSERT INTO `alas` VALUES (2, 'Ala B');
 
--- Tabla para las habitaciones (relacionadas con las alas)
-CREATE TABLE IF NOT EXISTS habitaciones (
-    id_habitacion INT AUTO_INCREMENT PRIMARY KEY,
-    numero_habitacion VARCHAR(10) UNIQUE NOT NULL,
-    id_ala INT NOT NULL,
-    tipo_habitacion ENUM('individual', 'doble') NOT NULL,
-    FOREIGN KEY (id_ala) REFERENCES alas(id_ala)
-);
+-- ----------------------------
+-- Table structure for camas
+-- ----------------------------
+DROP TABLE IF EXISTS `camas`;
+CREATE TABLE `camas` (
+  `id_cama` int NOT NULL AUTO_INCREMENT,
+  `id_habitacion` int NOT NULL,
+  `numero_cama` int NOT NULL,
+  `estado` enum('libre','ocupada','mantenimiento','higienizacion_pendiente') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'libre',
+  `higienizada` tinyint(1) NOT NULL DEFAULT 1,
+  `id_paciente_ocupante` int NULL DEFAULT NULL,
+  PRIMARY KEY (`id_cama`) USING BTREE,
+  UNIQUE INDEX `UQ_habitacion_numero_cama`(`id_habitacion` ASC, `numero_cama` ASC) USING BTREE,
+  -- ¡LA SIGUIENTE LÍNEA HA SIDO REMOVIDA PARA SOLUCIONAR EL ERROR DE CLAVE DUPLICADA!
+  -- UNIQUE INDEX `id_paciente_ocupante`(`id_paciente_ocupante` ASC) USING BTREE,
+  CONSTRAINT `camas_ibfk_1` FOREIGN KEY (`id_habitacion`) REFERENCES `habitaciones` (`id_habitacion`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `camas_ibfk_2` FOREIGN KEY (`id_paciente_ocupante`) REFERENCES `pacientes` (`id_paciente`) ON DELETE SET NULL ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
--- Tabla para las camas (relacionadas con las habitaciones)
-CREATE TABLE IF NOT EXISTS camas (
-    id_cama INT AUTO_INCREMENT PRIMARY KEY,
-    id_habitacion INT NOT NULL,
-    numero_cama INT NOT NULL, -- Ej: 1 para cama 1, 2 para cama 2 en doble
-    estado ENUM('libre', 'ocupada', 'mantenimiento', 'higienizacion_pendiente') NOT NULL DEFAULT 'libre',
-    higienizada BOOLEAN NOT NULL DEFAULT TRUE, -- TRUE si está limpia y lista para usar
-    id_paciente_ocupante INT UNIQUE NULL, -- Referencia al paciente actualmente en la cama
-    CONSTRAINT UQ_habitacion_numero_cama UNIQUE (id_habitacion, numero_cama),
-    FOREIGN KEY (id_habitacion) REFERENCES habitaciones(id_habitacion),
-    FOREIGN KEY (id_paciente_ocupante) REFERENCES pacientes(id_paciente) ON DELETE SET NULL
-);
+-- ----------------------------
+-- Records of camas (Se usarán los datos de prueba del otro Canvas)
+-- Se recomienda usar el script de datos de prueba para poblar las camas después de crear el esquema
+-- o asegurarse de que tu db.sql final contiene los datos deseados.
+-- Estos son ejemplos por si no usas el script de datos de prueba:
+INSERT INTO `camas` VALUES (1, 1, 1, 'ocupada', 1, 1);
+INSERT INTO `camas` VALUES (2, 2, 1, 'libre', 1, NULL);
+INSERT INTO `camas` VALUES (3, 2, 2, 'libre', 1, NULL);
+INSERT INTO `camas` VALUES (4, 3, 1, 'higienizacion_pendiente', 0, NULL);
+INSERT INTO `camas` VALUES (5, 4, 1, 'libre', 1, NULL);
+INSERT INTO `camas` VALUES (6, 5, 1, 'libre', 1, NULL);
+INSERT INTO `camas` VALUES (7, 5, 2, 'libre', 1, NULL);
 
--- Tabla para registrar las internaciones de los pacientes
-CREATE TABLE IF NOT EXISTS pacientes_internados (
-    id_internacion INT AUTO_INCREMENT PRIMARY KEY,
-    id_paciente INT NOT NULL,
-    id_cama INT NOT NULL,
-    fecha_ingreso DATETIME DEFAULT CURRENT_TIMESTAMP,
-    fecha_alta DATETIME NULL,
-    estado ENUM('internado', 'alta_pendiente', 'dado_de_alta') NOT NULL DEFAULT 'internado',
-    FOREIGN KEY (id_paciente) REFERENCES pacientes(id_paciente),
-    FOREIGN KEY (id_cama) REFERENCES camas(id_cama)
-);
 
--- Datos de ejemplo (¡Importante para la prueba!)
-INSERT IGNORE INTO alas (nombre_ala) VALUES ('Ala A'), ('Ala B');
+-- ----------------------------
+-- Table structure for habitaciones
+-- ----------------------------
+DROP TABLE IF EXISTS `habitaciones`;
+CREATE TABLE `habitaciones` (
+  `id_habitacion` int NOT NULL AUTO_INCREMENT,
+  `numero_habitacion` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `id_ala` int NOT NULL,
+  `tipo_habitacion` enum('individual','doble') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`id_habitacion`) USING BTREE,
+  UNIQUE INDEX `numero_habitacion`(`numero_habitacion` ASC) USING BTREE,
+  INDEX `id_ala`(`id_ala` ASC) USING BTREE,
+  CONSTRAINT `habitaciones_ibfk_1` FOREIGN KEY (`id_ala`) REFERENCES `alas` (`id_ala`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
--- Insertar habitaciones y camas con verificación IGNORE para evitar duplicados si se ejecuta varias veces
-INSERT IGNORE INTO habitaciones (numero_habitacion, id_ala, tipo_habitacion) VALUES
-('101', (SELECT id_ala FROM alas WHERE nombre_ala = 'Ala A'), 'individual'),
-('102', (SELECT id_ala FROM alas WHERE nombre_ala = 'Ala A'), 'doble'),
-('103', (SELECT id_ala FROM alas WHERE nombre_ala = 'Ala A'), 'individual'),
-('201', (SELECT id_ala FROM alas WHERE nombre_ala = 'Ala B'), 'individual'),
-('202', (SELECT id_ala FROM alas WHERE nombre_ala = 'Ala B'), 'doble');
+-- ----------------------------
+-- Records of habitaciones
+-- ----------------------------
+INSERT INTO `habitaciones` VALUES (1, '101', 1, 'individual');
+INSERT INTO `habitaciones` VALUES (2, '102', 1, 'doble');
+INSERT INTO `habitaciones` VALUES (3, '103', 1, 'individual');
+INSERT INTO `habitaciones` VALUES (4, '201', 2, 'individual');
+INSERT INTO `habitaciones` VALUES (5, '202', 2, 'doble');
 
--- Insertar camas. Asume que las habitaciones ya existen.
--- Si hay un error de clave foránea al insertar camas, asegúrate de que las habitaciones se hayan insertado primero.
-INSERT IGNORE INTO camas (id_habitacion, numero_cama, estado, higienizada) VALUES
-((SELECT id_habitacion FROM habitaciones WHERE numero_habitacion = '101'), 1, 'libre', TRUE),
-((SELECT id_habitacion FROM habitaciones WHERE numero_habitacion = '102'), 1, 'libre', TRUE),
-((SELECT id_habitacion FROM habitaciones WHERE numero_habitacion = '102'), 2, 'libre', TRUE),
-((SELECT id_habitacion FROM habitaciones WHERE numero_habitacion = '103'), 1, 'higienizacion_pendiente', FALSE), -- Cama no higienizada para prueba
-((SELECT id_habitacion FROM habitaciones WHERE numero_habitacion = '201'), 1, 'libre', TRUE),
-((SELECT id_habitacion FROM habitaciones WHERE numero_habitacion = '202'), 1, 'libre', TRUE),
-((SELECT id_habitacion FROM habitaciones WHERE numero_habitacion = '202'), 2, 'libre', TRUE);
+-- ----------------------------
+-- Table structure for pacientes
+-- ----------------------------
+DROP TABLE IF EXISTS `pacientes`;
+CREATE TABLE `pacientes` (
+  `id_paciente` int NOT NULL AUTO_INCREMENT,
+  `dni` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `nombre` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `apellido` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `fecha_nacimiento` date NOT NULL,
+  `sexo` enum('M','F','Otro') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `direccion` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `telefono` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `grupo_sanguineo` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `alergias` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `antecedentes_medicos` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `motivo_internacion` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `fecha_registro` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_paciente`) USING BTREE,
+  UNIQUE INDEX `dni`(`dni` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- Records of pacientes (Se usarán los datos de prueba del otro Canvas)
+-- Estos son ejemplos por si no usas el script de datos de prueba:
+INSERT INTO `pacientes` VALUES (1, '36220045', 'Victor', 'Aguilera', '1992-02-15', 'M', 'Juan de garay 1349', '3544660382', 'vitoan@proton.me', 'o+', 'penisilina', 'sobrepeso', 'estres', '2025-06-17 22:57:06');
+
+-- ----------------------------
+-- Table structure for pacientes_internados
+-- ----------------------------
+DROP TABLE IF EXISTS `pacientes_internados`;
+CREATE TABLE `pacientes_internados` (
+  `id_internacion` int NOT NULL AUTO_INCREMENT,
+  `id_paciente` int NOT NULL,
+  `id_cama` int NOT NULL,
+  `fecha_ingreso` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `fecha_alta` datetime NULL DEFAULT NULL,
+  `estado` enum('internado','alta_pendiente','dado_de_alta') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'internado',
+  PRIMARY KEY (`id_internacion`) USING BTREE,
+  INDEX `id_paciente`(`id_paciente` ASC) USING BTREE,
+  INDEX `id_cama`(`id_cama` ASC) USING BTREE,
+  CONSTRAINT `pacientes_internados_ibfk_1` FOREIGN KEY (`id_paciente`) REFERENCES `pacientes` (`id_paciente`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `pacientes_internados_ibfk_2` FOREIGN KEY (`id_cama`) REFERENCES `camas` (`id_cama`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of pacientes_internados (Se usarán los datos de prueba del otro Canvas)
+-- Estos son ejemplos por si no usas el script de datos de prueba:
+INSERT INTO `pacientes_internados` VALUES (1, 1, 1, '2025-06-17 22:57:07', NULL, 'internado');
+
+SET FOREIGN_KEY_CHECKS = 1;
