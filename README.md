@@ -60,7 +60,7 @@ El objetivo es optimizar la gestión hospitalaria, reduciendo errores en la asig
 | **Base de Datos**  | MySQL (con Sequelize ORM)      |
 | **Estilos**        | Tailwind CSS (vía CDN)         |
 | **Configuración**  | dotenv para variables de entorno |
-| **Despliegue**     | Clever Cloud                   |
+| **Despliegue**     | Render y Railway                |
 
 - **Calidad del Código**:
   - Modularidad: Rutas, controladores, y modelos separados.
