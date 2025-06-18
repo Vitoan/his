@@ -66,7 +66,7 @@ El objetivo es optimizar la gestión hospitalaria, reduciendo errores en la asig
   - Modularidad: Rutas, controladores, y modelos separados.
   - Uso de `async/await` para operaciones asíncronas.
   - Transacciones en base de datos para garantizar integridad.
-  - Nomenclatura clara y en español.
+  - Nomenclatura clara.
 
 ---
 
@@ -151,7 +151,7 @@ CREATE TABLE pacientes_internados (
 
 | Requisito                          | Estado       | Detalle                                                                 |
 |------------------------------------|--------------|-------------------------------------------------------------------------|
-| Repositorio GitHub                | ✅ Completado | [https://github.com/Vitoan/his]       |
+| Repositorio GitHub                | ✅ Completado | https://github.com/Vitoan/his       |
 | URL de Despliegue                 | ✅ Completado  | `[https://his-aguilera.onrender.com/admision]/admission`  |
 | Video de Demostración             | ⏳ Pendiente  | `[URL_YOUTUBE_O_DRIVE]`                              |
 | README.md                         | ✅ Completado | Este archivo                                                    |
