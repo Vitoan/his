@@ -41,7 +41,7 @@ El objetivo es optimizar la gestión hospitalaria, reduciendo errores en la asig
   - 📋 **Registro de Internación**: Asocia pacientes con camas y registra la fecha de ingreso.
   - ❌ **Cancelación de Internación**: Da de alta a pacientes, actualizando el estado de la cama a "higienización pendiente".
 - **Gestión de Camas**:
-  - Vista de disponibilidad de camas (ruta `/admission/camas`).
+  - Vista de disponibilidad de camas (ruta `/admision/camas`).
   - Seguimiento de estados: libre, ocupada, mantenimiento, higienización pendiente.
 - **Manejo de Errores**:
   - Notificaciones para el usuario (por ejemplo, "No hay camas disponibles").
