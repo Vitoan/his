@@ -151,12 +151,12 @@ CREATE TABLE pacientes_internados (
 
 | Requisito                          | Estado       | Detalle                                                                 |
 |------------------------------------|--------------|-------------------------------------------------------------------------|
-| Repositorio GitHub                | ✅ Completado | [https://github.com/Vitoan/his](https://github.com/Vitoan/his)          |
-| URL de Despliegue                 | ⏳ Pendiente  | `[URL]/admission`  |
-| Video de Demostración             | ⏳ Pendiente  | `[URL_YOUTUBE_O_DRIVE]` (máximo 7 minutos)                              |
+| Repositorio GitHub                | ✅ Completado | [https://github.com/Vitoan/his]       |
+| URL de Despliegue                 | ✅ Completado  | `[https://his-aguilera.onrender.com/admision]/admission`  |
+| Video de Demostración             | ⏳ Pendiente  | `[URL_YOUTUBE_O_DRIVE]`                              |
 | README.md                         | ✅ Completado | Este archivo                                                    |
-| Endpoint Funcional                | ✅ Completado | Rutas: `/`, `/admission`, `/admission/list`, `/admission/new`, `/admission/:id`, `/admission/camas` |
-| Funcionalidad de Admisión         | ✅ Completado | Registro, actualización, asignación de camas, y cancelación            |
+| Endpoint Funcional                | ✅ Completado | Rutas: `/`, `/admision`, `/pacientes/lista`, `/camas/disponibilidad` |
+| Funcionalidad de Admisión         | ✅ Completado | Registro, actualización, asignación de camas          |
 | Interfaz de Usuario               | ✅ Completado | Responsiva con Tailwind CSS                                            |
 | Script SQL                        | ✅ Completado | `db.sql` con tablas y datos de ejemplo                                 |
 | Normalización de BD (3FN)         | ✅ Completado | Ver `db.sql` para claves, índices, e integridad referencial            |
